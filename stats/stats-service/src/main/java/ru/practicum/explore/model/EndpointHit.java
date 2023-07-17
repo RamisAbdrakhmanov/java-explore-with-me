@@ -24,7 +24,7 @@ public class EndpointHit {
     @Column(name = "uri")
     String uri;
 
-    @Column(name = "user_id")
+    @Column(name = "user_ip")
     String ip;
 
     @Column(name = "stats_time")
