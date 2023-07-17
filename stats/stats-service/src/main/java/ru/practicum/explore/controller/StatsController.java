@@ -33,7 +33,7 @@ public class StatsController {
                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
                                        @RequestParam(required = false)
                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
-                                       @RequestParam List<String> uris,
+                                       @RequestParam(required = false) List<String> uris,
                                        @RequestParam(defaultValue = "false") boolean unique) {
         return statsService.getStats(start, end, uris, unique)
                 .stream().map(ViewStatsMapper::toViewStatsDto).collect(Collectors.toList());
