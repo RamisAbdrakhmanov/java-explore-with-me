@@ -3,13 +3,14 @@ package ru.practicum.explore.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import ru.practicum.explore.model.EndpointHit;
 import ru.practicum.explore.model.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface StatsRepository extends JpaRepository<ViewStats, Integer> {
+public interface StatsRepository extends JpaRepository<EndpointHit, Integer> {
 
     @Query(" SELECT new ru.practicum.explore.model.ViewStats(eh.app, eh.uri, COUNT(DISTINCT eh.ip)) " +
             "FROM EndpointHit as eh " +

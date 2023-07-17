@@ -16,7 +16,7 @@ public class StatsService {
     private StatsRepository statsRepository;
 
     public void addEndpointHit(EndpointHit endpointHit) {
-
+        statsRepository.save(endpointHit);
     }
 
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
