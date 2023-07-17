@@ -1,7 +1,6 @@
 package ru.practicum.explore.client;
 
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -21,9 +20,9 @@ public class StatsClient {
 
     protected final RestTemplate rest;
 
-    public StatsClient(@Value("http://localhost:9090") String serverUrl, RestTemplateBuilder builder) {
+    public StatsClient(RestTemplateBuilder builder) {
         this.rest = builder
-                .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
+                .uriTemplateHandler(new DefaultUriBuilderFactory("http://localhost:9090"))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build();
     }
