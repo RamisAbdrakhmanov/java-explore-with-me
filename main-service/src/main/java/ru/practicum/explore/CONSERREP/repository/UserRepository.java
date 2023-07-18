@@ -1,4 +1,4 @@
-package ru.practicum.explore.admin.repository;
+package ru.practicum.explore.CONSERREP.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AdminUserRepository extends JpaRepository<User, Pageable> {
+public interface UserRepository extends JpaRepository<User, Pageable> {
 
     List<User> findAllByIdIn(List<Long> id, Pageable pageable);
 

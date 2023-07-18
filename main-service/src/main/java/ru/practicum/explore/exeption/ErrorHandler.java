@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explore.model.exception.ApiError;
 import ru.practicum.explore.model.exception.CustomNotFoundException;
+import ru.practicum.explore.model.exception.CustomValidException;
+import ru.practicum.explore.model.exception.EventStateException;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
@@ -45,10 +47,30 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handlerEntityMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        String status = String.valueOf(HttpStatus.NOT_FOUND);
+        String status = String.valueOf(HttpStatus.BAD_REQUEST);
         String reason = "Incorrectly made request.";
+        String message = e.getMessage();
+        LocalDateTime time = LocalDateTime.now();
+        return new ApiError(message, reason, status, time);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handlerEntityCustomValidException(final CustomValidException e) {
+        String status = String.valueOf(HttpStatus.BAD_REQUEST);
+        String reason = "Incorrectly made request.";
+        String message = e.getMessage();
+        LocalDateTime time = LocalDateTime.now();
+        return new ApiError(message, reason, status, time);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiError handlerEntityEventStateException(final EventStateException e) {
+        String status = String.valueOf(HttpStatus.FORBIDDEN);
+        String reason = "For the requested operation the conditions are not met.";
         String message = e.getMessage();
         LocalDateTime time = LocalDateTime.now();
         return new ApiError(message, reason, status, time);
