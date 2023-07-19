@@ -5,10 +5,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.explore.model.exception.ApiError;
-import ru.practicum.explore.model.exception.CustomNotFoundException;
-import ru.practicum.explore.model.exception.CustomValidException;
-import ru.practicum.explore.model.exception.EventStateException;
+import ru.practicum.explore.model.exception.*;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
@@ -31,6 +28,16 @@ public class ErrorHandler {
     public ApiError handlerEntityConstraintViolationException(final ConstraintViolationException e) {
         String status = String.valueOf(HttpStatus.CONFLICT);
         String reason = "Integrity constraint has been violated.";
+        String message = e.getMessage();
+        LocalDateTime time = LocalDateTime.now();
+        return new ApiError(message, reason, status, time);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handlerEntityCustomConflictException(final CustomConflictException e) {
+        String status = String.valueOf(HttpStatus.CONFLICT);
+        String reason = "CustomConflictException.";
         String message = e.getMessage();
         LocalDateTime time = LocalDateTime.now();
         return new ApiError(message, reason, status, time);

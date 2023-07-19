@@ -2,6 +2,7 @@ package ru.practicum.explore.CONSERREP.service.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.CONSERREP.repository.EventRepository;
@@ -11,9 +12,7 @@ import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.State;
 import ru.practicum.explore.model.event.StateActionAdmin;
-import ru.practicum.explore.model.event.StateActionUser;
-import ru.practicum.explore.model.event.dto.UpdateEventAdminRequest;
-import ru.practicum.explore.model.exception.CustomValidException;
+import ru.practicum.explore.model.event.dto.UpdateEventAdminDto;
 import ru.practicum.explore.model.exception.EventStateException;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,6 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-@NoArgsConstructor
 public class AdminEventService {
 
     private EventRepository eventRepository;
@@ -29,12 +27,12 @@ public class AdminEventService {
 
     public List<Event> getEvents(List<Integer> users, List<State> states, List<Integer> categories,
                                  LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
-        Pageable pageable = MyPageRequest.of(from, size);
-        return eventRepository.findAllForAdmin(users, states, categories, rangeStart, rangeEnd, pageable);
+
+        return eventRepository.findAllForAdmin(users, states, categories, rangeStart, rangeEnd);
     }
 
-    public Event updateEvent(long eventId, UpdateEventAdminRequest updAdm) {
-        Event event = entityFinder.getEventByIdAndUserId(eventId);
+    public Event updateEvent(long eventId, UpdateEventAdminDto updAdm) {
+        Event event = entityFinder.getEventById(eventId);
         if (event.getState() != State.PENDING && event.getState() != State.CANCELED) {
             throw new EventStateException("Cannot publish the event because it's not in the right state: PUBLISHED");
         }

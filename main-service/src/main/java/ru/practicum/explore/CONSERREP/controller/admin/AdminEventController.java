@@ -9,7 +9,7 @@ import ru.practicum.explore.CONSERREP.service.admin.AdminEventService;
 import ru.practicum.explore.mapper.EventMapper;
 import ru.practicum.explore.model.event.State;
 import ru.practicum.explore.model.event.dto.EventFullDto;
-import ru.practicum.explore.model.event.dto.UpdateEventAdminRequest;
+import ru.practicum.explore.model.event.dto.UpdateEventAdminDto;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -41,7 +41,7 @@ public class AdminEventController {
 
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto updateEvent(@PathVariable long eventId, @RequestBody UpdateEventAdminRequest updRequest){
+    public EventFullDto updateEvent(@PathVariable long eventId, @RequestBody UpdateEventAdminDto updRequest){
         log.info("Start: ADMIN : \"updateEvent\" : eventId={}, updRequest={}", eventId, updRequest);
         return EventMapper.toEventFullDto(adminEventService.updateEvent(eventId, updRequest));
     }

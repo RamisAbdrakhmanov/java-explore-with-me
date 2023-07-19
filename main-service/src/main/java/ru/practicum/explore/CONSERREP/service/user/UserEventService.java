@@ -3,37 +3,44 @@ package ru.practicum.explore.CONSERREP.service.user;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.explore.CONSERREP.repository.EventRepository;
+import ru.practicum.explore.CONSERREP.repository.PartReqRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.common.MyPageRequest;
 import ru.practicum.explore.mapper.EventMapper;
+import ru.practicum.explore.mapper.ParticipationRequestMapper;
 import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.State;
 import ru.practicum.explore.model.event.StateActionUser;
 import ru.practicum.explore.model.event.dto.NewEventDto;
-import ru.practicum.explore.model.event.dto.UpdateEventUserRequest;
+import ru.practicum.explore.model.event.dto.UpdateEventUserDto;
+import ru.practicum.explore.model.exception.CustomConflictException;
+import ru.practicum.explore.model.exception.CustomNotFoundException;
 import ru.practicum.explore.model.exception.CustomValidException;
 import ru.practicum.explore.model.exception.EventStateException;
-import ru.practicum.explore.model.participation.dto.ParticipationRequestDto;
-import ru.practicum.explore.model.request.EventRequestStatusUpdateRequest;
-import ru.practicum.explore.model.request.EventRequestStatusUpdateResult;
+import ru.practicum.explore.model.request.ParticipationRequest;
+import ru.practicum.explore.model.request.ParticipationRequestDto;
+import ru.practicum.explore.model.request.Status;
+import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateRequest;
+import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateResult;
 import ru.practicum.explore.model.user.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UserEventService {
 
     private EventRepository eventRepository;
+    private PartReqRepository partReqRepository;
     private EntityFinder entityFinder;
 
     public List<Event> getEventsByUserId(long userId, int from, int size) {
-        Pageable pageable = MyPageRequest.of(from, size);
-        return eventRepository.findAllByUserId(userId, pageable);
+        return eventRepository.findAllByUserId(userId);
     }
 
 
@@ -46,12 +53,12 @@ public class UserEventService {
 
     public Event getEventByUserIdAndEventId(long userId, long eventId) {
 
-        return entityFinder.getEventByIdAndUserId(userId, eventId);
+        return entityFinder.getEventByUserIdAndId(userId, eventId);
     }
 
 
-    public Event updateEvent(long userId, long eventId, UpdateEventUserRequest updEvent) {
-        Event event = entityFinder.getEventByIdAndUserId(userId, eventId);
+    public Event updateEvent(long userId, long eventId, UpdateEventUserDto updEvent) {
+        Event event = entityFinder.getEventByUserIdAndId(userId, eventId);
         if (event.getState() != State.PENDING && event.getState() != State.CANCELED) {
             throw new EventStateException("Only pending or canceled events can be changed");
         }
@@ -96,14 +103,71 @@ public class UserEventService {
         return eventRepository.save(event);
     }
 
+    public List<ParticipationRequest> getRequest(long userId, long eventId) {
+        entityFinder.getUserById(userId);
+        entityFinder.getEventById(eventId);
 
-  /*  public List<ParticipationRequestDto> getRequest(@PathVariable long userId, @PathVariable long eventId) {
-
+        return partReqRepository.findAllByEventId(eventId);
     }
 
+    public EventRequestStatusUpdateResult updateRequests(long userId, long eventId,
+                                                         EventRequestStatusUpdateRequest request) {
+        Event event = entityFinder.getEventByUserIdAndId(userId, eventId);
 
-    public List<EventRequestStatusUpdateResult> updateRequest(@PathVariable long userId, @PathVariable long eventId,
-                                                              @RequestBody EventRequestStatusUpdateRequest request) {
+        if (event.getState() != State.PUBLISHED) {
+            throw new CustomConflictException("Event has to be : PUBLISHED.");
+        }
+        int counter = 0;
+        try {
 
-    }*/
+            for (int i = 0; i < request.getRequestIds().size(); i++) {
+                long l = request.getRequestIds().get(i);
+                ParticipationRequest pr = partReqRepository.findById(l)
+                        .orElseThrow(() -> new CustomNotFoundException(String
+                                .format("Request with id=%d was not found", l)));
+                if (pr.getStatus() != Status.PENDING) {
+                    throw new CustomValidException("Request must have status PENDING");
+                }
+                if (event.getParticipantLimit() != 0) {
+                    if (event.getConfirmedRequests() == event.getParticipantLimit()) {
+                        counter = i;
+                        throw new CustomConflictException("ParticipantLimit is over.");
+                    }
+                }
+
+                pr.setStatus(request.getStatus());
+
+                if (request.getStatus() == Status.PENDING) {
+                    event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                }
+                partReqRepository.save(pr);
+            }
+        } catch (CustomConflictException e) {
+            throw new CustomConflictException(e.getMessage());
+        } finally {
+            for (int i = counter; i < request.getRequestIds().size(); i++) {
+                long l = request.getRequestIds().get(i);
+                ParticipationRequest pr = partReqRepository.findById(l)
+                        .orElseThrow(() -> new CustomNotFoundException(String
+                                .format("Request with id=%d was not found", l)));
+                if (pr.getStatus() == Status.PENDING) {
+                    pr.setStatus(Status.REJECTED);
+                }
+                partReqRepository.save(pr);
+            }
+        }
+
+        List<ParticipationRequest> confirmedRequests = partReqRepository
+                .findAllByEventIdAndStatus(eventId, Status.CONFIRMED);
+        List<ParticipationRequest> rejectedRequests = partReqRepository
+                .findAllByEventIdAndStatus(eventId, Status.REJECTED);
+
+        return new EventRequestStatusUpdateResult(
+                confirmedRequests.stream()
+                        .map(ParticipationRequestMapper::toParticipationRequestDto).collect(Collectors.toList()),
+                rejectedRequests.stream()
+                        .map(ParticipationRequestMapper::toParticipationRequestDto).collect(Collectors.toList())
+        );
+
+    }
 }

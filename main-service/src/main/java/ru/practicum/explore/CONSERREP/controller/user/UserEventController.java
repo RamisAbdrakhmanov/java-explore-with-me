@@ -5,15 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.mapper.EventMapper;
-import ru.practicum.explore.model.event.Event;
+import ru.practicum.explore.mapper.ParticipationRequestMapper;
 import ru.practicum.explore.model.event.dto.EventFullDto;
 import ru.practicum.explore.model.event.dto.EventShortDto;
 import ru.practicum.explore.model.event.dto.NewEventDto;
-import ru.practicum.explore.model.event.dto.UpdateEventUserRequest;
-import ru.practicum.explore.model.participation.dto.ParticipationRequestDto;
-import ru.practicum.explore.model.request.EventRequestStatusUpdateRequest;
-import ru.practicum.explore.model.request.EventRequestStatusUpdateResult;
+import ru.practicum.explore.model.event.dto.UpdateEventUserDto;
 import ru.practicum.explore.CONSERREP.service.user.UserEventService;
+import ru.practicum.explore.model.request.ParticipationRequestDto;
+import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateRequest;
+import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateResult;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -58,21 +58,24 @@ public class UserEventController {
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEvent(@PathVariable long userId, @PathVariable long eventId,
-                                    @RequestBody UpdateEventUserRequest updEvent) {
+                                    @RequestBody UpdateEventUserDto updEvent) {
         log.info("Start: USER : \"updateEvent\" : userId={}, eventId={}, updEvent={}", userId, eventId, updEvent);
         return EventMapper.toEventFullDto(userEventService.updateEvent(userId, eventId, updEvent));
     }
 
- /*   @GetMapping("/{eventId}/requests")
+    @GetMapping("/{eventId}/requests")
     public List<ParticipationRequestDto> getRequest(@PathVariable long userId, @PathVariable long eventId) {
-
+        log.info("Start: USER : \"getRequest\" : userId={}, eventId={}", userId, eventId);
+        return userEventService.getRequest(userId, eventId)
+                .stream().map(ParticipationRequestMapper::toParticipationRequestDto).collect(Collectors.toList());
     }
 
     @PatchMapping("/{eventId}/requests")
-    public List<EventRequestStatusUpdateResult> updateRequest(@PathVariable long userId, @PathVariable long eventId,
+    public EventRequestStatusUpdateResult updateRequests(@PathVariable long userId, @PathVariable long eventId,
                                                               @RequestBody EventRequestStatusUpdateRequest request) {
-
-    }*/
+        log.info("Start: USER : \"updateRequest\" : userId={}, eventId={}, request={}", userId, eventId, request);
+        return userEventService.updateRequests(userId,eventId, request);
+    }
 
 
 }

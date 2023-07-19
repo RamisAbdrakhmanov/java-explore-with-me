@@ -3,7 +3,6 @@ package ru.practicum.explore.model.event.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.explore.model.event.State;
 import ru.practicum.explore.model.event.StateActionUser;
 import ru.practicum.explore.model.location.Location;
 import ru.practicum.explore.validation.TwoHoursBeforeNow;
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateEventUserRequest {
+public class UpdateEventUserDto {
     @Size(min = 20,max = 2000)
     private String annotation;
     private int category;

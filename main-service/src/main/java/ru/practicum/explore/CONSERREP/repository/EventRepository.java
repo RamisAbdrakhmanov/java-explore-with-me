@@ -1,9 +1,11 @@
 package ru.practicum.explore.CONSERREP.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.State;
 import ru.practicum.explore.model.user.User;
@@ -12,11 +14,12 @@ import ru.practicum.explore.model.user.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Pageable> {
+public interface EventRepository extends JpaRepository<Event, Long> {
 
-    List<Event> findAllByUserId(long userId, Pageable pageable);
+    List<Event> findAllByUserId(long userId);
 
     Optional<Event> findByIdAndUserId(long eventId, long userId);
 
@@ -28,5 +31,7 @@ public interface EventRepository extends JpaRepository<Event, Pageable> {
             "AND (state IN ?2 OR ?2 is NULL) " +
             "AND (category.id IN ?3 OR ?3 is NULL) ")
     List<Event> findAllForAdmin(List<Integer> users, List<State> states, List<Integer> categories,
-                                LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
+                                LocalDateTime rangeStart, LocalDateTime rangeEnd);
+
+    Set<Event> findAllByIdIn(Set<Long> eventIds);
 }
