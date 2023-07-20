@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explore.model.exception.*;
 
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice

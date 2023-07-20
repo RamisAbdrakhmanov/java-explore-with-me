@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateEventUserDto {
-    @Size(min = 20,max = 2000)
+    @Size(min = 20, max = 2000)
     private String annotation;
     private Long category;
     @Size(min = 20, max = 7000)
     private String description;
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Location location;
     private Boolean paid;
