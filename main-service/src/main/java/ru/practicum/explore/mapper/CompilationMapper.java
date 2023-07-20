@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class CompilationMapper {
 
-    public Compilation toCompilation(NewCompilationDto ncd, Set<Event> events){
-        return new Compilation(0,ncd.isPinned(),ncd.getTitle(),events);
+    public Compilation toCompilation(NewCompilationDto ncd, Set<Event> events) {
+        return new Compilation(0, ncd.isPinned(), ncd.getTitle(), events);
     }
 
-    public CompilationDto toCompilationDto(Compilation compilation){
+    public CompilationDto toCompilationDto(Compilation compilation) {
         Set<EventShortDto> shortDtos = compilation.getEvents()
                 .stream().map(EventMapper::toEventShortDto).collect(Collectors.toSet());
         return new CompilationDto(compilation.getId(), compilation.isPinned(), compilation.getTitle(), shortDtos);

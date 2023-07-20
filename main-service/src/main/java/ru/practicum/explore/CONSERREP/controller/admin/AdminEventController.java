@@ -3,6 +3,7 @@ package ru.practicum.explore.CONSERREP.controller.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.CONSERREP.service.admin.AdminEventService;
@@ -27,10 +28,12 @@ public class AdminEventController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EventFullDto> getEvents(@RequestParam(required = false) List<Integer> users,
+    public List<EventFullDto> getEvents(@RequestParam(required = false) List<Long> users,
                                         @RequestParam(required = false) List<State> states,
-                                        @RequestParam(required = false) List<Integer> categories,
-                                        @RequestParam(required = false)LocalDateTime rangeStart,
+                                        @RequestParam(required = false) List<Long> categories,
+                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                        @RequestParam(required = false) LocalDateTime rangeStart,
+                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                         @RequestParam(required = false) LocalDateTime rangeEnd,
                                         @RequestParam(defaultValue = "0") int from,
                                         @RequestParam(defaultValue = "10") int size) {
@@ -41,7 +44,7 @@ public class AdminEventController {
 
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto updateEvent(@PathVariable long eventId, @RequestBody UpdateEventAdminDto updRequest){
+    public EventFullDto updateEvent(@PathVariable long eventId, @Valid @RequestBody UpdateEventAdminDto updRequest) {
         log.info("Start: ADMIN : \"updateEvent\" : eventId={}, updRequest={}", eventId, updRequest);
         return EventMapper.toEventFullDto(adminEventService.updateEvent(eventId, updRequest));
     }

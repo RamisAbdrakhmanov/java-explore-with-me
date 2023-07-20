@@ -28,14 +28,14 @@ public class AdminCompilationService {
 
     public Compilation updateCompilation(long compId, UpdateCompilationDto updComp) {
         Compilation compilation = entityFinder.getCompilationById(compId);
-        if(updComp.getEvents() != null ){
+        if (updComp.getEvents() != null) {
             Set<Event> events = entityFinder.getEventsForComp(updComp.getEvents());
             compilation.setEvents(events);
         }
-        if(updComp.getPinned() != null ){
+        if (updComp.getPinned() != null) {
             compilation.setPinned(updComp.getPinned());
         }
-        if(updComp.getTitle() != null ){
+        if (updComp.getTitle() != null) {
             compilation.setTitle(updComp.getTitle());
         }
         return compilationRepository.save(compilation);

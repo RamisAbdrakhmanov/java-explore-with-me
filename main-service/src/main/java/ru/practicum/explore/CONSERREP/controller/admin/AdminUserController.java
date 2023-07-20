@@ -15,11 +15,8 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.explore.mapper.UserMapper.toUser;
-import static ru.practicum.explore.mapper.UserMapper.toUserDto;
 
 @Slf4j
-@Valid
 @RestController
 @RequestMapping("/admin/users")
 @AllArgsConstructor
@@ -29,19 +26,19 @@ public class AdminUserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUsers(@RequestParam List<Long> id,
+    public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                   @RequestParam(defaultValue = "10") @Positive int size) {
-        log.info("Start: ADMIN : \"getUser\" : id={}", id);
-        return adminUserService.getUsers(id, from, size)
+        log.info("Start: ADMIN : \"getUsers\" : id={}", ids);
+        return adminUserService.getUsers(ids, from, size)
                 .stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto addUser(@RequestBody NewUserDto userDto) {
+    public UserDto addUser(@Valid @RequestBody NewUserDto userDto) {
         log.info("Start: ADMIN : \"addUser\" : NewUserDto={}", userDto);
-        return toUserDto(adminUserService.addUser(toUser(userDto)));
+        return UserMapper.toUserDto(adminUserService.addUser(UserMapper.toUser(userDto)));
     }
 
     @DeleteMapping("/{id}")

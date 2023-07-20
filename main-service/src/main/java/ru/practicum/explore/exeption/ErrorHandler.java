@@ -73,13 +73,16 @@ public class ErrorHandler {
         return new ApiError(message, reason, status, time);
     }
 
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ApiError handlerEntityEventStateException(final EventStateException e) {
+    public ApiError handlerEntityEventStateException(final CustomForbiddenException e) {
         String status = String.valueOf(HttpStatus.FORBIDDEN);
         String reason = "For the requested operation the conditions are not met.";
         String message = e.getMessage();
         LocalDateTime time = LocalDateTime.now();
         return new ApiError(message, reason, status, time);
     }
+
+
 }

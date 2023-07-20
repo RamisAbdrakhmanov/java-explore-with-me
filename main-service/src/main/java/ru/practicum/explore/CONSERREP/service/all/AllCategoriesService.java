@@ -7,7 +7,6 @@ import ru.practicum.explore.CONSERREP.repository.CategoryRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.common.MyPageRequest;
 import ru.practicum.explore.model.category.Category;
-import ru.practicum.explore.model.category.dto.CategoryDto;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class AllCategoriesService {
     private EntityFinder entityFinder;
 
     public List<Category> getCategories(int from, int size) {
-        Pageable pageable = MyPageRequest.of(from,size);
+        Pageable pageable = MyPageRequest.of(from, size);
         return categoryRepository.findAllBy(pageable);
     }
 

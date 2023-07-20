@@ -7,14 +7,12 @@ import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.dto.EventFullDto;
 import ru.practicum.explore.model.event.dto.EventShortDto;
 import ru.practicum.explore.model.event.dto.NewEventDto;
-import ru.practicum.explore.model.location.Location;
+import ru.practicum.explore.model.event.location.Location;
 import ru.practicum.explore.model.user.User;
 import ru.practicum.explore.model.user.dto.UserShortDto;
 
 @UtilityClass
 public class EventMapper {
-
-
 
     public Event toEvent(User user, Category category, NewEventDto eventDto) {
         return new Event(user, category, eventDto.getAnnotation(), eventDto.getDescription(), eventDto.getEventDate(),
@@ -32,12 +30,12 @@ public class EventMapper {
                 event.getState(), event.getTitle(), event.getViews());
     }
 
-    public EventShortDto toEventShortDto(Event event){
+    public EventShortDto toEventShortDto(Event event) {
         UserShortDto userShortDto = UserMapper.toUserShortDto(event.getUser());
         CategoryDto categoryDto = CategoryMapper.toCategoryDto(event.getCategory());
 
-        return new EventShortDto(event.getId(), event.getAnnotation(), categoryDto,event.getConfirmedRequests(),
-                event.getEventDate(), userShortDto, event.getPaid(),event.getTitle(),event.getViews());
+        return new EventShortDto(event.getId(), event.getAnnotation(), categoryDto, event.getConfirmedRequests(),
+                event.getEventDate(), userShortDto, event.getPaid(), event.getTitle(), event.getViews());
 
     }
 

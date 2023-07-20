@@ -66,7 +66,7 @@ public class UserRequestService {
     public ParticipationRequest updateRequest(long userId, long reqId) {
         ParticipationRequest pr = entityFinder.getParticipationRequestByIdAndUserId(reqId, userId);
         pr.setStatus(Status.REJECTED);
-        pr.getEvent().setConfirmedRequests( pr.getEvent().getConfirmedRequests() - 1);
+        pr.getEvent().setConfirmedRequests(pr.getEvent().getConfirmedRequests() - 1);
         return repository.save(pr);
     }
 

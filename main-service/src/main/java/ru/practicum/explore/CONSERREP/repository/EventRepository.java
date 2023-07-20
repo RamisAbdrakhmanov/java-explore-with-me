@@ -1,15 +1,12 @@
 package ru.practicum.explore.CONSERREP.repository;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.State;
-import ru.practicum.explore.model.user.User;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,19 +16,53 @@ import java.util.Set;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    List<Event> findAllByUserId(long userId);
+    List<Event> findAllByUserId(long userId, Pageable pageable);
 
     Optional<Event> findByIdAndUserId(long eventId, long userId);
 
     Optional<Event> findById(long eventId);
 
-    @Query("SELECT Event FROM Event " +
-            "WHERE eventDate BETWEEN ?4 AND  ?5 " +
-            "AND (user IN ?1 OR ?1 is NULL) " +
-            "AND (state IN ?2 OR ?2 is NULL) " +
-            "AND (category.id IN ?3 OR ?3 is NULL) ")
-    List<Event> findAllForAdmin(List<Integer> users, List<State> states, List<Integer> categories,
-                                LocalDateTime rangeStart, LocalDateTime rangeEnd);
+    @Query("SELECT e FROM Event e " +
+            "WHERE e.user.id IN (:users) " +
+            "AND e.state IN (:states) " +
+            "AND e.category.id IN (:categories) " +
+            "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd")
+    List<Event> findAllForAdmin(
+            @Param("users") List<Long> users,
+            @Param("states") List<State> states,
+            @Param("categories") List<Long> categories,
+            @Param("rangeStart") LocalDateTime rangeStart,
+            @Param("rangeEnd") LocalDateTime rangeEnd,
+            Pageable pageable);
+
+
+    @Query("SELECT e FROM Event e " +
+            "WHERE (lower(e.annotation) LIKE concat('%',lower(:text),'%') " +
+            "OR lower(e.description) LIKE concat('%',lower(:text),'%')) " +
+            "AND e.category.id IN (:categories) " +
+            "AND e.paid IN (:paid) " +
+            "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd " +
+            "AND (e.participantLimit != 0 AND e.confirmedRequests < e.participantLimit)")
+    List<Event> findAllForAllWithOnlyAvailable(@Param("text") String text,
+                                               @Param("categories") List<Long> categories,
+                                               @Param("paid") Boolean paid,
+                                               @Param("rangeStart") LocalDateTime rangeStart,
+                                               @Param("rangeEnd") LocalDateTime rangeEnd,
+                                               Pageable pageable);
+
+    @Query("SELECT e FROM Event e " +
+            "WHERE (lower(e.annotation) LIKE concat('%',lower(:text),'%') " +
+            "OR lower(e.description) LIKE concat('%',lower(:text),'%')) " +
+            "AND e.category.id IN (:categories) " +
+            "AND e.paid IN (:paid) " +
+            "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd")
+    List<Event> findAllForAllWithoutOnlyAvailable(@Param("text") String text,
+                                                  @Param("categories") List<Long> categories,
+                                                  @Param("paid") Boolean paid,
+                                                  @Param("rangeStart") LocalDateTime rangeStart,
+                                                  @Param("rangeEnd") LocalDateTime rangeEnd,
+                                                  Pageable pageable);
+
 
     Set<Event> findAllByIdIn(Set<Long> eventIds);
 }

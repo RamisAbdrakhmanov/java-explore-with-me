@@ -5,17 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.CONSERREP.service.admin.AdminCategoryService;
+import ru.practicum.explore.mapper.CategoryMapper;
 import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.model.category.dto.CategoryDto;
 import ru.practicum.explore.model.category.dto.NewCategoryDto;
 
 import javax.validation.Valid;
 
-import static ru.practicum.explore.mapper.CategoryMapper.toCategory;
-import static ru.practicum.explore.mapper.CategoryMapper.toCategoryDto;
 
 @Slf4j
-@Valid
 @RestController
 @RequestMapping("/admin/categories")
 @AllArgsConstructor
@@ -25,9 +23,9 @@ public class AdminCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto addCategory(@RequestBody NewCategoryDto newCategoryDto) {
+    public CategoryDto addCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         log.info("Start: ADMIN : \"addCategory\" : NewCategoryDto={}", newCategoryDto);
-        return toCategoryDto(adminCategoryService.addCategory(toCategory(newCategoryDto)));
+        return CategoryMapper.toCategoryDto(adminCategoryService.addCategory(CategoryMapper.toCategory(newCategoryDto)));
     }
 
     @DeleteMapping("/{catId}")
@@ -39,9 +37,9 @@ public class AdminCategoryController {
 
     @PatchMapping("/{catId}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryDto updateCategory(@PathVariable long catId, @RequestBody NewCategoryDto newCategoryDto) {
+    public CategoryDto updateCategory(@PathVariable long catId, @Valid @RequestBody NewCategoryDto newCategoryDto) {
         log.info("Start: ADMIN : \"updateCategory\" : id={}", catId);
-        Category category = toCategory(catId, newCategoryDto);
-        return toCategoryDto(adminCategoryService.updateCategory(category));
+        Category category = CategoryMapper.toCategory(catId, newCategoryDto);
+        return CategoryMapper.toCategoryDto(adminCategoryService.updateCategory(category));
     }
 }

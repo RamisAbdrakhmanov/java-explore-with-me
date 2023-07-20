@@ -1,4 +1,4 @@
-package ru.practicum.explore.model.location;
+package ru.practicum.explore.model.event.location;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

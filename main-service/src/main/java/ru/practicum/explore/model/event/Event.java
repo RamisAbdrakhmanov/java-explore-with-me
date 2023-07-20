@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "event")
+@Table(name = "events")
 public class Event {
 
     @Id
@@ -71,6 +71,7 @@ public class Event {
 
 
         this.createdOn = LocalDateTime.now();
+        this.views = 0;
         if (paid == null) {
             this.paid = false;
         }

@@ -22,14 +22,14 @@ public class AllCategoriesController {
 
     @GetMapping
     private List<CategoryDto> getCategories(@RequestParam(defaultValue = "0") int from,
-                                            @RequestParam(defaultValue = "10") int size){
+                                            @RequestParam(defaultValue = "10") int size) {
         log.info("Start: ALL : \"getCategories\" : ");
-        return allCategoriesService.getCategories(from,size)
+        return allCategoriesService.getCategories(from, size)
                 .stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{catId}")
-    private CategoryDto getCategory(@PathVariable long catId){
+    private CategoryDto getCategory(@PathVariable long catId) {
         log.info("Start: ALL : \"getCategory\" : catId={}", catId);
         return CategoryMapper.toCategoryDto(allCategoriesService.getCategory(catId));
     }

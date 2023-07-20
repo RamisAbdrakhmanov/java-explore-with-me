@@ -28,7 +28,7 @@ public class AdminCompilationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto compilationDto){
+    public CompilationDto addCompilation(@RequestBody NewCompilationDto compilationDto) {
         log.info("Start: ADMIN : \"adminCompilation\" : compilationDto={}", compilationDto);
         Set<Event> events = entityFinder.getEventsForComp(compilationDto.getEvents());
         Compilation compilation = CompilationMapper.toCompilation(compilationDto, events);
@@ -37,15 +37,15 @@ public class AdminCompilationController {
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompilation(@PathVariable long compId){
+    public void deleteCompilation(@PathVariable long compId) {
         log.info("Start: ADMIN : \"deleteCompilation\" : compId={}", compId);
         adminCompilationService.deleteCompilation(compId);
     }
 
     @PatchMapping("/{compId}")
     @ResponseStatus(HttpStatus.OK)
-    public CompilationDto updateCompilation(@PathVariable long compId, @RequestBody UpdateCompilationDto updComp){
+    public CompilationDto updateCompilation(@PathVariable long compId, @RequestBody UpdateCompilationDto updComp) {
         log.info("Start: ADMIN : \"updateCompilation\" : compId={}, updComp={}", compId, updComp);
-        return CompilationMapper.toCompilationDto(adminCompilationService.updateCompilation(compId,updComp));
+        return CompilationMapper.toCompilationDto(adminCompilationService.updateCompilation(compId, updComp));
     }
 }

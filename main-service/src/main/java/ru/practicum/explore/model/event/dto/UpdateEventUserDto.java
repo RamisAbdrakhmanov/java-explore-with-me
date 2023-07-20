@@ -1,11 +1,11 @@
 package ru.practicum.explore.model.event.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.explore.model.event.StateActionUser;
-import ru.practicum.explore.model.location.Location;
-import ru.practicum.explore.validation.TwoHoursBeforeNow;
+import ru.practicum.explore.model.event.location.Location;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -16,16 +16,16 @@ import java.time.LocalDateTime;
 public class UpdateEventUserDto {
     @Size(min = 20,max = 2000)
     private String annotation;
-    private int category;
+    private Long category;
     @Size(min = 20, max = 7000)
     private String description;
-    @TwoHoursBeforeNow
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Location location;
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
     private StateActionUser stateAction;
-    @Size(min = 2, max = 120)
+    @Size(min = 3, max = 120)
     private String title;
 }

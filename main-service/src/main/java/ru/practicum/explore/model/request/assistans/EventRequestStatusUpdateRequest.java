@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explore.model.request.Status;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor

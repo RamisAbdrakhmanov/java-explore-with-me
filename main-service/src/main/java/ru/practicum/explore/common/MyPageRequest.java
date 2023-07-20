@@ -12,4 +12,8 @@ public class MyPageRequest extends PageRequest {
     public static MyPageRequest of(int page, int size) {
         return new MyPageRequest(page, size, Sort.unsorted());
     }
+
+    public static MyPageRequest of(int page, int size, String sort) {
+        return new MyPageRequest(page, size, Sort.by(sort));
+    }
 }

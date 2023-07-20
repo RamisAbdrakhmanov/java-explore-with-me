@@ -16,22 +16,22 @@ import ru.practicum.explore.model.event.StateActionUser;
 import ru.practicum.explore.model.event.dto.NewEventDto;
 import ru.practicum.explore.model.event.dto.UpdateEventUserDto;
 import ru.practicum.explore.model.exception.CustomConflictException;
+import ru.practicum.explore.model.exception.CustomForbiddenException;
 import ru.practicum.explore.model.exception.CustomNotFoundException;
 import ru.practicum.explore.model.exception.CustomValidException;
-import ru.practicum.explore.model.exception.EventStateException;
 import ru.practicum.explore.model.request.ParticipationRequest;
-import ru.practicum.explore.model.request.ParticipationRequestDto;
 import ru.practicum.explore.model.request.Status;
 import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateRequest;
 import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateResult;
 import ru.practicum.explore.model.user.User;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class UserEventService {
 
@@ -40,11 +40,17 @@ public class UserEventService {
     private EntityFinder entityFinder;
 
     public List<Event> getEventsByUserId(long userId, int from, int size) {
-        return eventRepository.findAllByUserId(userId);
+        Pageable pageable = MyPageRequest.of(from, size);
+        return eventRepository.findAllByUserId(userId, pageable);
     }
 
 
     public Event addEvent(long userId, NewEventDto newEventDto) {
+        if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new CustomValidException("Field: eventDate. " +
+                    "Error: должно содержать дату, которая еще не наступила. " +
+                    "Value: " + newEventDto.getEventDate().toString());
+        }
         User user = entityFinder.getUserById(userId);
         Category category = entityFinder.gerCategoryById(newEventDto.getCategory());
         Event event = EventMapper.toEvent(user, category, newEventDto);
@@ -59,8 +65,9 @@ public class UserEventService {
 
     public Event updateEvent(long userId, long eventId, UpdateEventUserDto updEvent) {
         Event event = entityFinder.getEventByUserIdAndId(userId, eventId);
+
         if (event.getState() != State.PENDING && event.getState() != State.CANCELED) {
-            throw new EventStateException("Only pending or canceled events can be changed");
+            throw new CustomForbiddenException("Only pending or canceled events can be changed");
         }
         if (updEvent.getStateAction() != null) {
             if (updEvent.getStateAction() == StateActionUser.SEND_TO_REVIEW) {
@@ -70,6 +77,11 @@ public class UserEventService {
             }
         }
         if (updEvent.getEventDate() != null) {
+            if (updEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+                throw new CustomValidException("Field: eventDate. " +
+                        "Error: должно содержать дату, которая еще не наступила. " +
+                        "Value: " + updEvent.getEventDate().toString());
+            }
             event.setEventDate(updEvent.getEventDate());
         }
         if (updEvent.getPaid() != null) {
@@ -95,7 +107,7 @@ public class UserEventService {
             event.setParticipantLimit(updEvent.getParticipantLimit());
         }
 
-        if (updEvent.getCategory() != 0) {
+        if (updEvent.getCategory() != null) {
             Category category = entityFinder.gerCategoryById(updEvent.getCategory());
             event.setCategory(category);
         }

@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Pageable> {
 
-    List<User> findAllByIdIn(List<Long> id, Pageable pageable);
+    List<User> findAllByIdIn(List<Long> ids, Pageable pageable);
 
     void deleteById(long id);
 

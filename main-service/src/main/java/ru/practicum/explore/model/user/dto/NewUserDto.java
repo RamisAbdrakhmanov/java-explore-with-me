@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -12,10 +13,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class NewUserDto {
 
-    @NotBlank
+    @NotBlank(message = "Name don't have to be BLANK or EMPTY")
     @Size(min = 2, max = 250)
     private String name;
-    @NotBlank
+    @NotBlank(message = "Email don't have to be BLANK or EMPTY")
     @Size(min = 6, max = 254)
+    @Email(message = "Email must be correct")
     private String email;
 }

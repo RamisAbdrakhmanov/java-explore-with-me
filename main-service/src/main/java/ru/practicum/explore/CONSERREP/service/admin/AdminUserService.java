@@ -3,23 +3,29 @@ package ru.practicum.explore.CONSERREP.service.admin;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.explore.CONSERREP.repository.UserRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.common.MyPageRequest;
 import ru.practicum.explore.model.user.User;
-import ru.practicum.explore.CONSERREP.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class AdminUserService {
 
     private EntityFinder entityFinder;
     private UserRepository userRepository;
 
-    public List<User> getUsers(List<Long> id, int from, int size) {
+    public List<User> getUsers(List<Long> ids, int from, int size) {
         Pageable pageable = MyPageRequest.of(from, size);
-        return userRepository.findAllByIdIn(id, pageable);
+        if (ids != null) {
+            return userRepository.findAllByIdIn(ids, pageable);
+        } else {
+            return userRepository.findAll(pageable).toList();
+        }
     }
 
     public User addUser(User user) {

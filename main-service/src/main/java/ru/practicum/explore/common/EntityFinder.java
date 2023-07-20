@@ -53,11 +53,11 @@ public class EntityFinder {
                         .format("Compilation with id=%d was not found", compId)));
     }
 
-    public Set<Event> getEventsForComp(Set<Long> eventsIds){
+    public Set<Event> getEventsForComp(Set<Long> eventsIds) {
         return eventRepository.findAllByIdIn(eventsIds);
     }
 
-    public ParticipationRequest getParticipationRequestByIdAndUserId(long reqId, long userId){
+    public ParticipationRequest getParticipationRequestByIdAndUserId(long reqId, long userId) {
         getUserById(userId);
         return partReqRepository.findByIdAndRequesterId(reqId, userId)
                 .orElseThrow(() -> new CustomNotFoundException(String

@@ -13,7 +13,7 @@ import java.util.Set;
 public class UpdateCompilationDto {
 
     private Boolean pinned;
-    @Size(min = 1,max = 50)
+    @Size(min = 1, max = 50)
     private String title;
     private Set<Long> events;
 }

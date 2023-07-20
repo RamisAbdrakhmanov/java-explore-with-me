@@ -2,11 +2,14 @@ package ru.practicum.explore.CONSERREP.service.admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.CONSERREP.repository.CategoryRepository;
+import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.model.category.Category;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 @AllArgsConstructor
 public class AdminCategoryService {
 
@@ -22,7 +25,7 @@ public class AdminCategoryService {
         categoryRepository.deleteById(catId);
     }
 
-    public Category updateCategory(Category category){
+    public Category updateCategory(Category category) {
         Category cat = entityFinder.gerCategoryById(category.getId());
         cat.setName(category.getName());
         return categoryRepository.save(cat);

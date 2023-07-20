@@ -4,16 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explore.CONSERREP.service.user.UserEventService;
 import ru.practicum.explore.mapper.EventMapper;
 import ru.practicum.explore.mapper.ParticipationRequestMapper;
 import ru.practicum.explore.model.event.dto.EventFullDto;
 import ru.practicum.explore.model.event.dto.EventShortDto;
 import ru.practicum.explore.model.event.dto.NewEventDto;
 import ru.practicum.explore.model.event.dto.UpdateEventUserDto;
-import ru.practicum.explore.CONSERREP.service.user.UserEventService;
-import ru.practicum.explore.model.request.ParticipationRequestDto;
 import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateRequest;
 import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateResult;
+import ru.practicum.explore.model.request.dto.ParticipationRequestDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -42,10 +42,9 @@ public class UserEventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto addEvent(@PathVariable long userId, @RequestBody NewEventDto newEventDto) {
-        log.info("Start: USER : \"addUser\" : userId={}, NewEventDto={}", userId, newEventDto);
-
-        return EventMapper.toEventFullDto(userEventService.addEvent(userId,newEventDto));
+    public EventFullDto addEvent(@PathVariable long userId, @Valid @RequestBody NewEventDto newEventDto) {
+        log.info("Start: USER : \"addEvent\" : userId={}, NewEventDto={}", userId, newEventDto);
+        return EventMapper.toEventFullDto(userEventService.addEvent(userId, newEventDto));
     }
 
     @GetMapping("/{eventId}")
@@ -58,7 +57,7 @@ public class UserEventController {
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEvent(@PathVariable long userId, @PathVariable long eventId,
-                                    @RequestBody UpdateEventUserDto updEvent) {
+                                    @Valid @RequestBody UpdateEventUserDto updEvent) {
         log.info("Start: USER : \"updateEvent\" : userId={}, eventId={}, updEvent={}", userId, eventId, updEvent);
         return EventMapper.toEventFullDto(userEventService.updateEvent(userId, eventId, updEvent));
     }
@@ -72,9 +71,9 @@ public class UserEventController {
 
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult updateRequests(@PathVariable long userId, @PathVariable long eventId,
-                                                              @RequestBody EventRequestStatusUpdateRequest request) {
+                                                         @RequestBody EventRequestStatusUpdateRequest request) {
         log.info("Start: USER : \"updateRequest\" : userId={}, eventId={}, request={}", userId, eventId, request);
-        return userEventService.updateRequests(userId,eventId, request);
+        return userEventService.updateRequests(userId, eventId, request);
     }
 
 
