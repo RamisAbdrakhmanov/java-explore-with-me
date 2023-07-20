@@ -34,8 +34,9 @@ public class AdminEventService {
 
     public Event updateEvent(long eventId, UpdateEventAdminDto updAdm) {
         Event event = entityFinder.getEventById(eventId);
-        if (event.getState() != State.PENDING && event.getState() != State.CANCELED) {
-            throw new CustomForbiddenException("Cannot publish the event because it's not in the right state: PUBLISHED");
+        if (event.getState() != State.PENDING) {
+            throw new CustomForbiddenException("Cannot publish the event " +
+                    "because it's not in the right state: PUBLISHED");
         }
 
         if (updAdm.getStateAction() != null) {

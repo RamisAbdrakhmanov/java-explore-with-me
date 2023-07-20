@@ -8,6 +8,8 @@ import ru.practicum.explore.mapper.CategoryMapper;
 import ru.practicum.explore.model.category.dto.CategoryDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,8 +23,8 @@ public class AllCategoriesController {
     private AllCategoriesService allCategoriesService;
 
     @GetMapping
-    private List<CategoryDto> getCategories(@RequestParam(defaultValue = "0") int from,
-                                            @RequestParam(defaultValue = "10") int size) {
+    private List<CategoryDto> getCategories(@RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                            @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("Start: ALL : \"getCategories\" : ");
         return allCategoriesService.getCategories(from, size)
                 .stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());

@@ -17,7 +17,6 @@ import javax.validation.Valid;
 import java.util.Set;
 
 @Slf4j
-@Valid
 @RestController
 @RequestMapping("/admin/compilations")
 @AllArgsConstructor
@@ -28,7 +27,7 @@ public class AdminCompilationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto compilationDto) {
+    public CompilationDto addCompilation(@Valid @RequestBody NewCompilationDto compilationDto) {
         log.info("Start: ADMIN : \"adminCompilation\" : compilationDto={}", compilationDto);
         Set<Event> events = entityFinder.getEventsForComp(compilationDto.getEvents());
         Compilation compilation = CompilationMapper.toCompilation(compilationDto, events);
@@ -44,7 +43,7 @@ public class AdminCompilationController {
 
     @PatchMapping("/{compId}")
     @ResponseStatus(HttpStatus.OK)
-    public CompilationDto updateCompilation(@PathVariable long compId, @RequestBody UpdateCompilationDto updComp) {
+    public CompilationDto updateCompilation(@PathVariable long compId, @Valid @RequestBody UpdateCompilationDto updComp) {
         log.info("Start: ADMIN : \"updateCompilation\" : compId={}, updComp={}", compId, updComp);
         return CompilationMapper.toCompilationDto(adminCompilationService.updateCompilation(compId, updComp));
     }

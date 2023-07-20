@@ -3,6 +3,7 @@ package ru.practicum.explore.CONSERREP.service.all;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.CONSERREP.repository.CompilationRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.common.MyPageRequest;
@@ -11,6 +12,7 @@ import ru.practicum.explore.model.compilation.Compilation;
 import java.util.List;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class AllCompilationService {
 

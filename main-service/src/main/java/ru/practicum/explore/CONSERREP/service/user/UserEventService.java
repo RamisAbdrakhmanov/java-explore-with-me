@@ -138,7 +138,7 @@ public class UserEventService {
                         .orElseThrow(() -> new CustomNotFoundException(String
                                 .format("Request with id=%d was not found", l)));
                 if (pr.getStatus() != Status.PENDING) {
-                    throw new CustomValidException("Request must have status PENDING");
+                    throw new CustomConflictException("Request must have status PENDING");
                 }
                 if (event.getParticipantLimit() != 0) {
                     if (event.getConfirmedRequests() == event.getParticipantLimit()) {
@@ -149,7 +149,7 @@ public class UserEventService {
 
                 pr.setStatus(request.getStatus());
 
-                if (request.getStatus() == Status.PENDING) {
+                if (request.getStatus() == Status.CONFIRMED) {
                     event.setConfirmedRequests(event.getConfirmedRequests() + 1);
                 }
                 partReqRepository.save(pr);

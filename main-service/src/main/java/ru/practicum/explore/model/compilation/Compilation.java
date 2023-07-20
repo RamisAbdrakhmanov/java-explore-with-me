@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explore.model.event.Event;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 

@@ -1,5 +1,6 @@
 package ru.practicum.explore.exeption;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,7 +26,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handlerEntityConstraintViolationException(final ConstraintViolationException e) {
+    public ApiError handlerEntitySQL(final DataIntegrityViolationException e) {
         String status = String.valueOf(HttpStatus.CONFLICT);
         String reason = "Integrity constraint has been violated.";
         String message = e.getMessage();
@@ -73,16 +74,14 @@ public class ErrorHandler {
         return new ApiError(message, reason, status, time);
     }
 
-
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handlerEntityEventStateException(final CustomForbiddenException e) {
-        String status = String.valueOf(HttpStatus.FORBIDDEN);
+        String status = String.valueOf(HttpStatus.CONFLICT);
         String reason = "For the requested operation the conditions are not met.";
         String message = e.getMessage();
         LocalDateTime time = LocalDateTime.now();
         return new ApiError(message, reason, status, time);
     }
-
 
 }

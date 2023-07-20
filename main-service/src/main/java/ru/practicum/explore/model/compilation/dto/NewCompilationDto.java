@@ -5,12 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class NewCompilationDto {
 
     private boolean pinned;
@@ -18,4 +20,8 @@ public class NewCompilationDto {
     @Size(min = 1, max = 50)
     private String title;
     private Set<Long> events;
+
+    public NewCompilationDto() {
+        events = new HashSet<>();
+    }
 }

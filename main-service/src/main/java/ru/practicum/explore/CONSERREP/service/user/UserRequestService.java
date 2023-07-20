@@ -2,6 +2,7 @@ package ru.practicum.explore.CONSERREP.service.user;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.CONSERREP.repository.PartReqRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.model.event.Event;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class UserRequestService {
 
@@ -39,7 +41,6 @@ public class UserRequestService {
             entityFinder.getEventByUserIdAndId(userId, eventId);
             throw new CustomConflictException("User cannot be the owner of the event");
         } catch (CustomNotFoundException ignored) {
-
         }
 
         if (event.getState() != State.PUBLISHED) {
@@ -53,11 +54,12 @@ public class UserRequestService {
         }
 
         ParticipationRequest pR;
-        if (!event.getRequestModeration()) {
+        if (event.getRequestModeration() && event.getParticipantLimit() != 0) {
+
+            pR = new ParticipationRequest(0, LocalDateTime.now(), event, user, Status.PENDING);
+        } else {
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             pR = new ParticipationRequest(0, LocalDateTime.now(), event, user, Status.CONFIRMED);
-        } else {
-            pR = new ParticipationRequest(0, LocalDateTime.now(), event, user, Status.PENDING);
         }
 
         return repository.save(pR);
@@ -65,10 +67,10 @@ public class UserRequestService {
 
     public ParticipationRequest updateRequest(long userId, long reqId) {
         ParticipationRequest pr = entityFinder.getParticipationRequestByIdAndUserId(reqId, userId);
-        pr.setStatus(Status.REJECTED);
-        pr.getEvent().setConfirmedRequests(pr.getEvent().getConfirmedRequests() - 1);
+        if (pr.getStatus() == Status.CONFIRMED) {
+            pr.getEvent().setConfirmedRequests(pr.getEvent().getConfirmedRequests() - 1);
+        }
+        pr.setStatus(Status.CANCELED);
         return repository.save(pr);
     }
-
-
 }

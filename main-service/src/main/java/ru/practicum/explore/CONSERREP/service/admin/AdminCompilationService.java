@@ -2,6 +2,7 @@ package ru.practicum.explore.CONSERREP.service.admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.CONSERREP.repository.CompilationRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.model.compilation.Compilation;
@@ -11,6 +12,7 @@ import ru.practicum.explore.model.event.Event;
 import java.util.Set;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class AdminCompilationService {
 

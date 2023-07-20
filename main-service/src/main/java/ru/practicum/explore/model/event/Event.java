@@ -72,11 +72,10 @@ public class Event {
 
         this.createdOn = LocalDateTime.now();
         this.views = 0;
+        this.state = State.PENDING;
+
         if (paid == null) {
             this.paid = false;
-        }
-        if (state == null) {
-            this.state = State.PENDING;
         }
         if (requestModeration == null) {
             this.requestModeration = true;

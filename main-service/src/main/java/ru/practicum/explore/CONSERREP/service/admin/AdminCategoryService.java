@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explore.CONSERREP.repository.CategoryRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.model.category.Category;
+import ru.practicum.explore.model.event.Event;
+import ru.practicum.explore.model.exception.CustomConflictException;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -22,6 +25,10 @@ public class AdminCategoryService {
 
     public void deleteCategory(long catId) {
         entityFinder.gerCategoryById(catId);
+        List<Event> events = entityFinder.getEventsByCatId(catId);
+        if (events.size() > 0) {
+            throw new CustomConflictException("The category is not empty");
+        }
         categoryRepository.deleteById(catId);
     }
 

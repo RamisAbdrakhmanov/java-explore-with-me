@@ -10,6 +10,7 @@ import ru.practicum.explore.model.exception.CustomNotFoundException;
 import ru.practicum.explore.model.request.ParticipationRequest;
 import ru.practicum.explore.model.user.User;
 
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -62,5 +63,9 @@ public class EntityFinder {
         return partReqRepository.findByIdAndRequesterId(reqId, userId)
                 .orElseThrow(() -> new CustomNotFoundException(String
                         .format("Request with id=%d was not found", reqId)));
+    }
+
+    public List<Event> getEventsByCatId(long catId) {
+        return eventRepository.findAllByCategoryId(catId);
     }
 }

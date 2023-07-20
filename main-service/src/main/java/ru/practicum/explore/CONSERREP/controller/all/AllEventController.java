@@ -11,6 +11,9 @@ import ru.practicum.explore.model.event.dto.EventFullDto;
 import ru.practicum.explore.model.event.dto.EventShortDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,14 +31,16 @@ public class AllEventController {
     public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
                                          @RequestParam(required = false) List<Long> categories,
                                          @RequestParam(required = false) Boolean paid,
-                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                         @Future
+                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                          @RequestParam(required = false) LocalDateTime rangeStart,
-                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                         @Future
+                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                          @RequestParam(required = false) LocalDateTime rangeEnd,
                                          @RequestParam(defaultValue = "false") boolean onlyAvailable,
                                          @RequestParam(required = false) EventSort sort,
-                                         @RequestParam(defaultValue = "0") int from,
-                                         @RequestParam(defaultValue = "10") int size) {
+                                         @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                         @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("Start: ALL : \"getEvents\" : text={}, categories={}, paid={}, onlyAvailable={}, sort={}",
                 text, categories, paid, onlyAvailable, sort);
         return allEventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size)
