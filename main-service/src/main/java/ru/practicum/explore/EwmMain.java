@@ -11,7 +11,6 @@ public class EwmMain {
 
     public static void main(String[] args) {
         SpringApplication.run(EwmMain.class, args);
-
     }
 
 }

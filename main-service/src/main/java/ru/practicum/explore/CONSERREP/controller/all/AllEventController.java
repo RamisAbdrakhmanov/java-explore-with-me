@@ -1,7 +1,8 @@
 package ru.practicum.explore.CONSERREP.controller.all;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.CONSERREP.service.all.AllEventService;
@@ -26,11 +27,19 @@ import java.util.stream.Collectors;
 @Valid
 @RestController
 @RequestMapping("/events")
-@AllArgsConstructor
 public class AllEventController {
 
-    private AllEventService allEventService;
-    private StatsClient statsClient;
+    private final String serverUrl;
+    private final AllEventService allEventService;
+    private final StatsClient statsClient;
+
+    @Autowired
+    public AllEventController(AllEventService allEventService, StatsClient statsClient,
+                              @Value("${STATS_SERVER_URL}") String serverUrl) {
+        this.allEventService = allEventService;
+        this.statsClient = statsClient;
+        this.serverUrl = serverUrl;
+    }
 
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
@@ -59,17 +68,20 @@ public class AllEventController {
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable long eventId, HttpServletRequest request) {
         log.info("Start: ALL : \"getEventById\" : eventId={}", eventId);
-
         addStats(request);
-        List<ViewStatsDto> list = statsClient.getStats(LocalDateTime.MIN, LocalDateTime.MAX,
+        List<ViewStatsDto> list = statsClient.getStats(serverUrl, "0000-01-01 00:00:00",
+                "9999-12-31 23:59:59",
                 List.of(request.getRequestURI()), true);
-
-        return EventMapper.toEventFullDto(allEventService.getEventById(eventId, list.get(0).getHits()));
+        if (list.size() != 0) {
+            return EventMapper.toEventFullDto(allEventService.getEventById(eventId, list.get(0).getHits()));
+        } else {
+            return EventMapper.toEventFullDto(allEventService.getEventById(eventId, 1));
+        }
     }
 
     private void addStats(HttpServletRequest request) {
         EndpointHitDto endpointHitDto = new EndpointHitDto("ewm-main-service", request.getRequestURI(),
                 request.getRemoteAddr(), LocalDateTime.now());
-        statsClient.addEndpointHit(endpointHitDto);
+        statsClient.addEndpointHit(serverUrl, endpointHitDto);
     }
 }

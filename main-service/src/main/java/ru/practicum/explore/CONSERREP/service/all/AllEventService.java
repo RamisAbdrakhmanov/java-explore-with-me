@@ -41,7 +41,6 @@ public class AllEventService {
                 throw new CustomValidException("Start is before End.");
             }
         }
-
         Pageable pageable;
         if (sort != null) {
             switch (sort) {

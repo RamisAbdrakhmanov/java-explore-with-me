@@ -47,10 +47,8 @@ public class UserRequestService {
             throw new CustomConflictException("Event has to be : PUBLISHED.");
         }
 
-        if (event.getParticipantLimit() != 0) {
-            if (event.getConfirmedRequests() == event.getParticipantLimit()) {
-                throw new CustomConflictException("ParticipantLimit is over.");
-            }
+        if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() == event.getParticipantLimit()) {
+            throw new CustomConflictException("ParticipantLimit is over.");
         }
 
         ParticipationRequest pR;
