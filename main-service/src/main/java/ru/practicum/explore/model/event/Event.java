@@ -52,7 +52,7 @@ public class Event {
     @Column(name = "title")
     private String title;
     @Column(name = "views")
-    private Integer views;
+    private long views;
 
     public Event(User user, Category category, String annotation, String description,
                  LocalDateTime eventDate, float lat, float lon, Boolean paid,
@@ -71,7 +71,6 @@ public class Event {
 
 
         this.createdOn = LocalDateTime.now();
-        this.views = 0;
         this.state = State.PENDING;
 
         if (paid == null) {

@@ -24,12 +24,13 @@ public class AllEventService {
     private EventRepository eventRepository;
     private EntityFinder entityFinder;
 
-    public Event getEventById(long eventId) {
+    public Event getEventById(long eventId, long views) {
         Event event = entityFinder.getEventById(eventId);
         if (event.getState() != State.PUBLISHED) {
             throw new CustomNotFoundException(String.format("Event with id=%d was not found", eventId));
         }
-        return event;
+        event.setViews(views);
+        return eventRepository.save(event);
     }
 
     public List<Event> getEvents(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,

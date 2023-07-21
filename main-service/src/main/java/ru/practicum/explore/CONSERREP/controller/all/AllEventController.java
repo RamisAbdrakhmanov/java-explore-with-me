@@ -5,11 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.CONSERREP.service.all.AllEventService;
+import ru.practicum.explore.client.StatsClient;
+import ru.practicum.explore.dto.EndpointHitDto;
+import ru.practicum.explore.dto.ViewStatsDto;
 import ru.practicum.explore.mapper.EventMapper;
 import ru.practicum.explore.model.event.EventSort;
 import ru.practicum.explore.model.event.dto.EventFullDto;
 import ru.practicum.explore.model.event.dto.EventShortDto;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Positive;
@@ -26,6 +30,7 @@ import java.util.stream.Collectors;
 public class AllEventController {
 
     private AllEventService allEventService;
+    private StatsClient statsClient;
 
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
@@ -40,16 +45,31 @@ public class AllEventController {
                                          @RequestParam(defaultValue = "false") boolean onlyAvailable,
                                          @RequestParam(required = false) EventSort sort,
                                          @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                         @RequestParam(defaultValue = "10") @Positive int size) {
+                                         @RequestParam(defaultValue = "10") @Positive int size,
+                                         HttpServletRequest request) {
         log.info("Start: ALL : \"getEvents\" : text={}, categories={}, paid={}, onlyAvailable={}, sort={}",
                 text, categories, paid, onlyAvailable, sort);
+
+        addStats(request);
+
         return allEventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size)
                 .stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{eventId}")
-    public EventFullDto getEventById(@PathVariable long eventId) {
+    public EventFullDto getEventById(@PathVariable long eventId, HttpServletRequest request) {
         log.info("Start: ALL : \"getEventById\" : eventId={}", eventId);
-        return EventMapper.toEventFullDto(allEventService.getEventById(eventId));
+
+        addStats(request);
+        List<ViewStatsDto> list = statsClient.getStats(LocalDateTime.MIN, LocalDateTime.MAX,
+                List.of(request.getRequestURI()), true);
+
+        return EventMapper.toEventFullDto(allEventService.getEventById(eventId, list.get(0).getHits()));
+    }
+
+    private void addStats(HttpServletRequest request) {
+        EndpointHitDto endpointHitDto = new EndpointHitDto("ewm-main-service", request.getRequestURI(),
+                request.getRemoteAddr(), LocalDateTime.now());
+        statsClient.addEndpointHit(endpointHitDto);
     }
 }
