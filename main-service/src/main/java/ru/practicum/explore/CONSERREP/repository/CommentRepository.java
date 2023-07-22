@@ -27,4 +27,6 @@ public interface CommentRepository extends JpaRepository<Comment, Pageable> {
                                           Pageable pageable);
 
     Optional<Comment> findByIdAndAuthorIdAndEventId(long id, long authorId, long eventId);
+
+    List<Comment> findAllByEventIdOrderByCreatedDesc(long eventId, Pageable pageable);
 }

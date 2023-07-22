@@ -2,6 +2,7 @@ package ru.practicum.explore.CONSERREP.controller.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.CONSERREP.service.admin.AdminCommentService;
 import ru.practicum.explore.mapper.CommentMapper;
@@ -18,7 +19,8 @@ public class AdminCommentController {
 
 
     @PatchMapping("/{commentId}")
-    public CommentShortDto updateComment(@PathVariable long commentId, @RequestBody NewCommentDto newCommentDto){
+    @ResponseStatus(HttpStatus.OK)
+    public CommentShortDto updateComment(@PathVariable long commentId, @RequestBody NewCommentDto newCommentDto) {
         return CommentMapper.toCommentShortDto(adminCommentService.updateComment(commentId, newCommentDto));
     }
 }
