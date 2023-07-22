@@ -50,4 +50,6 @@ public class AdminEventController {
         log.info("Start: ADMIN : \"updateEvent\" : eventId={}, updRequest={}", eventId, updRequest);
         return EventMapper.toEventFullDto(adminEventService.updateEvent(eventId, updRequest));
     }
+
+
 }

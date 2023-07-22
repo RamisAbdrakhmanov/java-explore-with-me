@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explore.CONSERREP.service.user.UserCommentService;
 import ru.practicum.explore.CONSERREP.service.user.UserEventService;
+import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.mapper.EventMapper;
 import ru.practicum.explore.mapper.ParticipationRequestMapper;
 import ru.practicum.explore.model.event.dto.EventFullDto;
@@ -75,6 +77,5 @@ public class UserEventController {
         log.info("Start: USER : \"updateRequest\" : userId={}, eventId={}, request={}", userId, eventId, request);
         return userEventService.updateRequests(userId, eventId, request);
     }
-
 
 }
