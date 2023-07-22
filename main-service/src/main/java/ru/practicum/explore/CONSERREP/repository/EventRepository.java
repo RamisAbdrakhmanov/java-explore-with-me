@@ -14,22 +14,21 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<Event, Pageable> {
 
-    List<Event> findAllByUserId(long userId, Pageable pageable);
+    List<Event> findAllByInitiatorId(long userId, Pageable pageable);
 
-    Optional<Event> findByIdAndUserId(long eventId, long userId);
+    Optional<Event> findByIdAndInitiatorId(long eventId, long userId);
 
     Optional<Event> findById(long eventId);
 
     @Query("SELECT e FROM Event e " +
-            "WHERE (e.user.id IN (:users) OR :users IS NULL) " +
+            "WHERE (e.initiator.id IN (:initiators) OR :initiators IS NULL) " +
             "AND (e.state IN (:states) OR :states IS NULL) " +
             "AND (e.category.id IN (:categories) OR :categories IS NULL) " +
-            "AND (e.eventDate > :rangeStart OR :rangeStart IS NULL) " +
-            "AND (e.eventDate < :rangeEnd OR :rangeEnd IS NULL) ")
+            "AND (e.eventDate BETWEEN :rangeStart AND :rangeEnd) ")
     List<Event> findAllForAdmin(
-            @Param("users") List<Long> users,
+            @Param("initiators") List<Long> initiators,
             @Param("states") List<State> states,
             @Param("categories") List<Long> categories,
             @Param("rangeStart") LocalDateTime rangeStart,
@@ -43,8 +42,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "OR :text IS NULL ) " +
             "AND (e.category.id IN (:categories) OR :categories IS NULL) " +
             "AND (e.paid IN (:paid) OR :paid IS NULL) " +
-            "AND (e.eventDate > :rangeStart OR :rangeStart IS NULL) " +
-            "AND (e.eventDate < :rangeEnd OR :rangeEnd IS NULL) " +
+            "AND (e.eventDate BETWEEN :rangeStart AND :rangeEnd) " +
             "AND (e.participantLimit != 0 AND e.confirmedRequests < e.participantLimit)")
     List<Event> findAllForAllWithOnlyAvailable(@Param("text") String text,
                                                @Param("categories") List<Long> categories,
@@ -59,8 +57,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "OR :text IS NULL ) " +
             "AND (e.category.id IN (:categories) OR :categories IS NULL) " +
             "AND (e.paid IN (:paid) OR :paid IS NULL) " +
-            "AND (e.eventDate > :rangeStart OR :rangeStart IS NULL) " +
-            "AND (e.eventDate < :rangeEnd OR :rangeEnd IS NULL) ")
+            "AND (e.eventDate BETWEEN :rangeStart AND :rangeEnd) ")
     List<Event> findAllForAllWithoutOnlyAvailable(@Param("text") String text,
                                                   @Param("categories") List<Long> categories,
                                                   @Param("paid") Boolean paid,

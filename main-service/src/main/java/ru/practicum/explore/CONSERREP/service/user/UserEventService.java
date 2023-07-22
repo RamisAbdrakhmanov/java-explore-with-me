@@ -3,6 +3,7 @@ package ru.practicum.explore.CONSERREP.service.user;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.CONSERREP.repository.EventRepository;
 import ru.practicum.explore.CONSERREP.repository.PartReqRepository;
 import ru.practicum.explore.common.EntityFinder;
@@ -25,7 +26,6 @@ import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateRequ
 import ru.practicum.explore.model.request.assistans.EventRequestStatusUpdateResult;
 import ru.practicum.explore.model.user.User;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +41,7 @@ public class UserEventService {
 
     public List<Event> getEventsByUserId(long userId, int from, int size) {
         Pageable pageable = MyPageRequest.of(from, size);
-        return eventRepository.findAllByUserId(userId, pageable);
+        return eventRepository.findAllByInitiatorId(userId, pageable);
     }
 
 

@@ -37,7 +37,7 @@ public class EntityFinder {
 
     public Event getEventByUserIdAndId(long userId, long eventId) {
         getUserById(userId);
-        return eventRepository.findByIdAndUserId(eventId, userId)
+        return eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new CustomNotFoundException(String
                         .format("Event with id=%d was not found", eventId)));
     }

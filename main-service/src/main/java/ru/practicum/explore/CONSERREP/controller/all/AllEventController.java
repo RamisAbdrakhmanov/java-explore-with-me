@@ -59,7 +59,7 @@ public class AllEventController {
         log.info("Start: ALL : \"getEvents\" : text={}, categories={}, paid={}, onlyAvailable={}, sort={}",
                 text, categories, paid, onlyAvailable, sort);
 
-        addStats(request);
+         addStats(request);
 
         return allEventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size)
                 .stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
@@ -68,15 +68,15 @@ public class AllEventController {
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable long eventId, HttpServletRequest request) {
         log.info("Start: ALL : \"getEventById\" : eventId={}", eventId);
-        addStats(request);
+         addStats(request);
         List<ViewStatsDto> list = statsClient.getStats(serverUrl, "0000-01-01 00:00:00",
                 "9999-12-31 23:59:59",
                 List.of(request.getRequestURI()), true);
         if (list.size() != 0) {
             return EventMapper.toEventFullDto(allEventService.getEventById(eventId, list.get(0).getHits()));
         } else {
-            return EventMapper.toEventFullDto(allEventService.getEventById(eventId, 1));
-        }
+        return EventMapper.toEventFullDto(allEventService.getEventById(eventId, 1));
+         }
     }
 
     private void addStats(HttpServletRequest request) {

@@ -2,13 +2,13 @@ package ru.practicum.explore.CONSERREP.service.admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.CONSERREP.repository.CategoryRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.exception.CustomConflictException;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service

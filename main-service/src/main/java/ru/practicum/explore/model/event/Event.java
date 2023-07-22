@@ -34,7 +34,7 @@ public class Event {
     private LocalDateTime eventDate;
     @ManyToOne
     @JoinColumn(name = "initiator_id")
-    private User user;
+    private User initiator;
     @Column(name = "lat")
     private float lat;
     @Column(name = "lon")
@@ -48,20 +48,21 @@ public class Event {
     @Column(name = "request_moderation")
     private Boolean requestModeration;
     @Column(name = "state")
+    @Enumerated(EnumType.STRING)
     private State state;
     @Column(name = "title")
     private String title;
     @Column(name = "views")
     private long views;
 
-    public Event(User user, Category category, String annotation, String description,
+    public Event(User initiator, Category category, String annotation, String description,
                  LocalDateTime eventDate, float lat, float lon, Boolean paid,
                  int participantLimit, Boolean requestModeration, String title) {
         this.annotation = annotation;
         this.category = category;
         this.description = description;
         this.eventDate = eventDate;
-        this.user = user;
+        this.initiator = initiator;
         this.lat = lat;
         this.lon = lon;
         this.paid = paid;

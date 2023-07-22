@@ -1,8 +1,10 @@
 package ru.practicum.explore.CONSERREP.service.admin;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.CONSERREP.repository.EventRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.common.MyPageRequest;
@@ -14,10 +16,10 @@ import ru.practicum.explore.model.event.dto.UpdateEventAdminDto;
 import ru.practicum.explore.model.exception.CustomForbiddenException;
 import ru.practicum.explore.model.exception.CustomValidException;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @AllArgsConstructor
@@ -29,6 +31,16 @@ public class AdminEventService {
     public List<Event> getEvents(List<Long> users, List<State> states, List<Long> categories,
                                  LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
         Pageable pageable = MyPageRequest.of(from, size);
+        if (rangeStart != null && rangeEnd != null) {
+            if (rangeStart.isAfter(rangeEnd)) {
+                throw new CustomValidException("Start is before End.");
+            }
+        } else {
+            rangeStart = LocalDateTime.now().minusYears(2000);
+            rangeEnd = LocalDateTime.now().plusYears(2000);
+        }
+        log.info("SQL: ADMIN : \"findAllForAdmin\" : users={}, states={}, categories={}, rangeStart={}," +
+                " rangeEnd={}", users, states, categories, rangeStart, rangeEnd);
         return eventRepository.findAllForAdmin(users, states, categories, rangeStart, rangeEnd, pageable);
     }
 
