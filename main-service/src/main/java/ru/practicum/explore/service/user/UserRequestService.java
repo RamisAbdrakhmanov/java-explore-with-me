@@ -3,7 +3,6 @@ package ru.practicum.explore.service.user;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.repository.PartReqRepository;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.State;
@@ -11,6 +10,8 @@ import ru.practicum.explore.model.exception.CustomConflictException;
 import ru.practicum.explore.model.request.ParticipationRequest;
 import ru.practicum.explore.model.request.Status;
 import ru.practicum.explore.model.user.User;
+import ru.practicum.explore.repository.EventRepository;
+import ru.practicum.explore.repository.PartReqRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 public class UserRequestService {
 
     private PartReqRepository repository;
+    private EventRepository eventRepository;
     private EntityFinder entityFinder;
 
     public List<ParticipationRequest> getRequest(long userId) {
@@ -36,7 +38,7 @@ public class UserRequestService {
             throw new CustomConflictException("Request created.");
         }
 
-        if(repository.findByRequesterIdAndEventId(userId,eventId).isPresent()){
+        if (eventRepository.findByIdAndInitiatorId(eventId, userId).isPresent()) {
             throw new CustomConflictException("User cannot be the owner of the event");
         }
 
