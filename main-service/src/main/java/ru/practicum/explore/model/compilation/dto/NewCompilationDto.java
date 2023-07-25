@@ -1,11 +1,24 @@
 package ru.practicum.explore.model.compilation.dto;
 
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
+
+@Data
+@AllArgsConstructor
 public class NewCompilationDto {
-    private List<Integer> events;
+
     private boolean pinned;
-    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 50)
     private String title;
+    private Set<Long> events;
+
+    public NewCompilationDto() {
+        events = new HashSet<>();
+    }
 }
