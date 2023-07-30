@@ -40,7 +40,7 @@ public class UserCommentService {
 
     public Comment updateComment(long userId, long commentId, UpdateCommentDto updateCommentDto) {
 
-        Comment comment = commentRepository.findByIdAndAuthorId(userId, commentId)
+        Comment comment = commentRepository.findByIdAndAuthorId(commentId, userId)
                 .orElseThrow(() -> new CustomNotFoundException("There is no comment on the given parameters."));
 
         comment.setText(updateCommentDto.getText());
