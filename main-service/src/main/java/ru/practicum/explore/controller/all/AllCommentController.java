@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explore.service.all.AllCommentService;
 import ru.practicum.explore.mapper.CommentMapper;
 import ru.practicum.explore.model.comment.dto.CommentShortDto;
+import ru.practicum.explore.service.all.AllCommentService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -30,7 +30,6 @@ public class AllCommentController {
                                              @RequestParam(defaultValue = "10") @Positive int size) {
         return allCommentService.getComments(eventId, from, size)
                 .stream().map(CommentMapper::toCommentShortDto).collect(Collectors.toList());
-
     }
 
 }

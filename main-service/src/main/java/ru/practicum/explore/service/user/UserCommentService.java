@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explore.common.EntityFinder;
 import ru.practicum.explore.common.MyPageRequest;
 import ru.practicum.explore.model.comment.Comment;
-import ru.practicum.explore.model.comment.dto.NewCommentDto;
+import ru.practicum.explore.model.comment.dto.UpdateCommentDto;
 import ru.practicum.explore.model.event.State;
 import ru.practicum.explore.model.exception.CustomNotFoundException;
 import ru.practicum.explore.model.exception.CustomValidException;
@@ -28,7 +28,7 @@ public class UserCommentService {
     }
 
     public Comment getComment(long userId, long commentId) {
-        return entityFinder.getCommentByIdAndUserId(userId, commentId);
+        return entityFinder.getCommentByIdAndUserId(commentId, userId);
     }
 
     public Comment addComment(Comment comment) {
@@ -38,12 +38,12 @@ public class UserCommentService {
         return commentRepository.save(comment);
     }
 
-    public Comment updateComment(long userId, long commentId, NewCommentDto newCommentDto) {
+    public Comment updateComment(long userId, long commentId, UpdateCommentDto updateCommentDto) {
 
-        Comment comment = commentRepository.findByIdAndAuthorIdAndEventId(userId, commentId, newCommentDto.getEventId())
+        Comment comment = commentRepository.findByIdAndAuthorId(userId, commentId)
                 .orElseThrow(() -> new CustomNotFoundException("There is no comment on the given parameters."));
 
-        comment.setText(newCommentDto.getText());
+        comment.setText(updateCommentDto.getText());
         return commentRepository.save(comment);
     }
 

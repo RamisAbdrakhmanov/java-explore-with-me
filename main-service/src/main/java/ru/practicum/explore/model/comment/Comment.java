@@ -25,7 +25,7 @@ public class Comment {
     @JoinColumn(name = "event_id")
     private Event event;
     @ManyToOne
-    @JoinColumn(name = "commentator_id")
+    @JoinColumn(name = "author_id")
     private User author;
     @Column(name = "created")
     private LocalDateTime created;
