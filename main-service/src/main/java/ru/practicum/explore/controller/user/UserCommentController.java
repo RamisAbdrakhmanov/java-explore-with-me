@@ -42,6 +42,7 @@ public class UserCommentController {
                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                         @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                         @RequestParam(defaultValue = "10") @Positive int size) {
+
         log.info("Start: USER : \"getComments\" ");
         return userCommentService.getComments(userId, rangeStart, rangeEnd, from, size)
                 .stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
@@ -50,6 +51,7 @@ public class UserCommentController {
     @GetMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentDto getComment(@PathVariable long userId, @PathVariable long commentId) {
+
         log.info("Start: USER : \"getComment\" userId ={}, commentId={}", userId, commentId);
         return CommentMapper.toCommentDto(userCommentService.getComment(userId, commentId));
     }
@@ -71,7 +73,6 @@ public class UserCommentController {
         Comment comment = CommentMapper.toComment(user, event, newCommentDto);
         return CommentMapper.toCommentShortDto(userCommentService.addComment(comment));
     }
-
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentShortDto updateComment(@PathVariable long userId,

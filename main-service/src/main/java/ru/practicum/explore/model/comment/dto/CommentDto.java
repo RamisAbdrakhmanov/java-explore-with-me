@@ -3,6 +3,7 @@ package ru.practicum.explore.model.comment.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 import lombok.NoArgsConstructor;
 import ru.practicum.explore.model.event.dto.EventShortDto;
 import ru.practicum.explore.model.user.dto.UserShortDto;
