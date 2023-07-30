@@ -37,7 +37,7 @@ public class UserCommentService {
         }
         return commentRepository.save(comment);
     }
-  
+
     public Comment updateComment(long userId, long commentId, UpdateCommentDto updateCommentDto) {
 
         Comment comment = commentRepository.findByIdAndAuthorId(commentId, userId)

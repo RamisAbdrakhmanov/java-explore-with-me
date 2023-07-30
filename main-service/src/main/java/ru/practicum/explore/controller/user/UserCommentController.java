@@ -73,6 +73,7 @@ public class UserCommentController {
         Comment comment = CommentMapper.toComment(user, event, newCommentDto);
         return CommentMapper.toCommentShortDto(userCommentService.addComment(comment));
     }
+
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentShortDto updateComment(@PathVariable long userId,
